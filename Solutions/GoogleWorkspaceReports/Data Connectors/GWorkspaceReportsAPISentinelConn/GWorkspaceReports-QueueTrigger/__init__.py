@@ -30,7 +30,6 @@ pickle_string = base64.b64decode(pickle_str)
 connection_string = os.environ['AzureWebJobsStorage']
 logAnalyticsUri = os.environ.get('logAnalyticsUri')
 
-
 MAX_SCRIPT_EXEC_TIME_MINUTES = 10
 SCOPES = ['https://www.googleapis.com/auth/admin.reports.audit.readonly']
 
@@ -40,7 +39,6 @@ pattern = r'https:\/\/([\w\-]+)\.ods\.opinsights\.azure.([a-zA-Z\.]+)$'
 match = re.match(pattern,str(logAnalyticsUri))
 if(not match):
     raise Exception("Google Workspace Reports: Invalid Log Analytics Uri.")
-
 
 def get_credentials():
     creds = None
@@ -55,9 +53,6 @@ def get_credentials():
         except Exception as pickle_read_exception:
             logging.error('Error while loading pickle string: {}'.format(pickle_read_exception))
     return creds
-
-
-
 
 def isBlank (myString):
     return not (myString and myString.strip())

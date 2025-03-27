@@ -17,7 +17,6 @@ from .state_manager import StateManager
 from .state_manager import AzureStorageQueueHelper
 from datetime import datetime, timedelta
 
-
 customer_id = os.environ['WorkspaceID']
 fetchDelay = os.getenv('FetchDelay',10)
 chunksize = 9999
@@ -36,26 +35,7 @@ TIME_WINDOW_To_POLL_API = 60 * int(max_time_window_per_api_call_mins)    # in se
 SCOPES = ['https://www.googleapis.com/auth/admin.reports.audit.readonly']
 
 activities = [
-            "user_accounts",
-            "access_transparency", 
-            "admin",
-            "calendar",
-            "chat",
-            "drive",
-            "gcp",
-            "gplus",
-            "groups",
-            "groups_enterprise",
-            "jamboard", 
-            "login", 
-            "meet", 
-            "mobile", 
-            "rules", 
-            "saml", 
-            "token", 
-            "context_aware_access", 
-            "chrome", 
-            "data_studio"
+            "admin"
             ]
 
 # Remove excluded activities
@@ -64,15 +44,12 @@ if excluded_activities:
     excluded_activities = excluded_activities.replace(" ", "").split(",")
     activities = [activ for activ in activities if activ not in excluded_activities]
 
-
 if ((logAnalyticsUri in (None, '') or str(logAnalyticsUri).isspace())):
     logAnalyticsUri = 'https://' + customer_id + '.ods.opinsights.azure.com'
 pattern = r'https:\/\/([\w\-]+)\.ods\.opinsights\.azure.([a-zA-Z\.]+)$'
 match = re.match(pattern,str(logAnalyticsUri))
 if(not match):
     raise Exception("Google Workspace Reports: Invalid Log Analytics Uri.")
-
-
 
 def GetEndTime(logType):
     end_time = datetime.utcnow().replace(second=0, microsecond=0)
@@ -168,7 +145,6 @@ def format_message_for_queue_and_add(start_time, end_time, activity, mainQueueHe
     mainQueueHelper.send_to_queue(queue_body,True)
     logging.info("Added to queue: {}".format(queue_body))
     
-
 def main(mytimer: func.TimerRequest):
     logging.getLogger().setLevel(logging.INFO)
     if mytimer.past_due:
@@ -242,4 +218,3 @@ def main(mytimer: func.TimerRequest):
             logging.error( "Error: Google Workspace Reports data connector execution failed with an internal server error.")
             raise
     logging.info('Ending GWorkspaceReport-TimeTrigger program at {}'.format(time.ctime(int(time.time()))) )
-
